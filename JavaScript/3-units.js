@@ -1,73 +1,59 @@
 'use strict';
 
 const DURATION_UNITS = {
-  days:    { rx: /(\d+)\s*d/, mul: 86400 },
-  hours:   { rx: /(\d+)\s*h/, mul: 3600 },
-  minutes: { rx: /(\d+)\s*m/, mul: 60 },
-  seconds: { rx: /(\d+)\s*s/, mul: 1 }
+  d: 86400, // days
+  h: 3600, // hours
+  m: 60, // minutes
+  s: 1, // seconds
 };
 
 // Parse duration string to seconds
 // Example: duration('1d 10h 7m 13s')
 const duration = s => {
-  if (typeof(s) === 'number') return s;
+  if (typeof s === 'number') return s;
+  if (typeof s !== 'string') return 0;
   let result = 0;
-  let unit, match, key;
-  if (typeof(s) === 'string') {
-    for (key in DURATION_UNITS) {
-      unit = DURATION_UNITS[key];
-      match = s.match(unit.rx);
-      if (match) result += parseInt(match[1], 10) * unit.mul;
-    }
+  const parts = s.split(' ');
+  for (const part of parts) {
+    const unit = part.slice(-1);
+    const value = parseInt(part.slice(0, -1));
+    const mult = DURATION_UNITS[unit];
+    if (!isNaN(value) && mult) result += value * mult;
   }
   return result * 1000;
 };
 
+const SIZE_UNITS = ['', ' Kb', ' Mb', ' Gb', ' Tb', ' Pb', ' Eb', ' Zb', ' Yb'];
+
 // Convert bytes: Number to size: String with nearest units: Kb, Mb, Gb...
 const bytesToSize = bytes => {
   if (bytes === 0) return '0';
-  const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1000)), 10);
-  return (
-    Math.round(bytes / Math.pow(1000, i), 2) +
-    bytesToSize.sizes[i]
-  );
+  const exp = Math.floor(Math.log(bytes) / Math.log(1000));
+  const size = bytes / 1000 ** exp;
+  const short = Math.round(size, 2);
+  const unit = SIZE_UNITS[exp];
+  return short + unit;
 };
 
-bytesToSize.sizes = [
-  '', ' Kb', ' Mb', ' Gb', ' Tb', ' Pb', ' Eb', ' Zb', ' Yb'
-];
+const UNIT_SIZES = {
+  yb: 24, // yottabyte
+  zb: 21, // zettabyte
+  eb: 18, // exabyte
+  pb: 15, // petabyte
+  tb: 12, // terabyte
+  gb: 9, // gigabyte
+  mb: 6, // megabyte
+  kb: 3, // kilobyte
+};
 
 // Parse units and convert size: String to bytes: Number
 const sizeToBytes = size => {
-  if (typeof(size) === 'number') return size;
-  size = size.toUpperCase();
-  let result = 0;
-  const units = sizeToBytes.units;
-  if (typeof(size) === 'string') {
-    let key, unit, match;
-    let found = false;
-    for (key in units) {
-      unit = units[key];
-      match = size.match(unit.rx);
-      if (match) {
-        result += parseInt(match[1], 10) * Math.pow(10, unit.pow);
-        found = true;
-      }
-    }
-    if (!found) result = parseInt(size, 10);
-  }
-  return result;
-};
-
-sizeToBytes.units = {
-  yb: { rx: /(\d+)\s*YB/, pow: 24 },
-  zb: { rx: /(\d+)\s*ZB/, pow: 21 },
-  eb: { rx: /(\d+)\s*EB/, pow: 18 },
-  pb: { rx: /(\d+)\s*PB/, pow: 15 },
-  tb: { rx: /(\d+)\s*TB/, pow: 12 },
-  gb: { rx: /(\d+)\s*GB/, pow: 9 },
-  mb: { rx: /(\d+)\s*MB/, pow: 6 },
-  kb: { rx: /(\d+)\s*KB/, pow: 3 }
+  if (typeof size === 'number') return size;
+  const [num, unit] = size.toLowerCase().split(' ');
+  const exp = UNIT_SIZES[unit];
+  const value = parseInt(num, 10);
+  if (!exp) return value;
+  return value * 10 ** exp;
 };
 
 // Tests
