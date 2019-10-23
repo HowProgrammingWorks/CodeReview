@@ -1,4 +1,7 @@
-# Code Review
+## Code Review
+
+[![Code Review: как это и зачем](https://img.youtube.com/vi/EKL6NiIQ6ZU/0.jpg)](https://www.youtube.com/watch?v=EKL6NiIQ6ZU)
+[![Семинар: Code Review, ответы на вопросы](https://img.youtube.com/vi/AgH4OAKbmkM/0.jpg)](https://www.youtube.com/watch?v=AgH4OAKbmkM)
 
 Задачи Code Review:
 - Улучшение качества кода и поиск лучших решений
