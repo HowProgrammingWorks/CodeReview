@@ -16,7 +16,7 @@ const between = (str, quotes) => {
 
 // Tests
 
-const assert = require('assert').strict;
+const assert = require('node:assert').strict;
 
 {
   const line = 'Marcus Aurelius <marcus@spqr.re>';

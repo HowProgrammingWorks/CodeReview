@@ -10,7 +10,7 @@ const dup = (n, e) => {
 
 // Tests
 
-const assert = require('assert').strict;
+const assert = require('node:assert').strict;
 
 const a = dup(3, 'hello');
 const expected = ['hello', 'hello', 'hello'];
