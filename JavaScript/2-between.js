@@ -3,13 +3,15 @@
 // Implementation
 
 const between = (str, quotes) => {
-  let i = str.indexOf(quotes[0]);
+  const start = quotes[0];
+  const end = quotes[1];
+  let i = str.indexOf(start);
   if (i === -1) return '';
-  str = str.substring(i + 1);
-  if (quotes[1]) {
-    i = str.indexOf(quotes[1]);
+  const line = str.substring(i + 1);
+  if (end) {
+    i = line.indexOf(end);
     if (i === -1) return '';
-    str = str.substring(0, i);
+    return line.substring(0, i);
   }
   return str;
 };
